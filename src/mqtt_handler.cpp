@@ -13,7 +13,8 @@ PubSubClient client(espClient);
 
 static String _deviceId, _userId, _groupId;
 
-void setupMQTT(const String& deviceId, const String& userId, const String& groupId, void (*callback)(char*, byte*, unsigned int))
+void setupMQTT(const String &deviceId, const String &userId, const String &groupId,
+               void (*callback)(char *, byte *, unsigned int))
 {
     _deviceId = deviceId;
     _userId = userId;
@@ -22,7 +23,7 @@ void setupMQTT(const String& deviceId, const String& userId, const String& group
     client.setCallback(callback);
 }
 
-void reconnectMQTT(const String& deviceId, const String& userId, const String& groupId)
+void reconnectMQTT(const String &deviceId, const String &userId, const String &groupId)
 {
     while (!client.connected())
     {
@@ -33,7 +34,7 @@ void reconnectMQTT(const String& deviceId, const String& userId, const String& g
             {
                 Logger::log("Entering WiFi configuration mode...");
                 extern void configureWiFiThroughSerial();
-                extern void loadWiFiConfig(String&, String&);
+                extern void loadWiFiConfig(String &, String &);
                 String ssid, password;
                 configureWiFiThroughSerial();
                 loadWiFiConfig(ssid, password);
@@ -43,10 +44,10 @@ void reconnectMQTT(const String& deviceId, const String& userId, const String& g
             }
         }
 
-        if (client.connect(deviceId.c_str()))
+        if (client.connect(deviceId.c_str(), MQTT_USER, MQTT_PASSWORD))
         {
             Logger::log("Connected to MQTT");
-            String commandsTopic = "users/" + userId + "/groups/" + groupId + "/" + deviceId + "/commands";
+            String commandsTopic = "$users/" + userId + "/groups/" + groupId + "/" + deviceId + "/commands";
             Logger::log("Subscribing to topic: " + commandsTopic);
             client.subscribe(commandsTopic.c_str());
         }
@@ -58,7 +59,7 @@ void reconnectMQTT(const String& deviceId, const String& userId, const String& g
     }
 }
 
-void handleMQTT(const String& deviceId, const String& userId, const String& groupId)
+void handleMQTT(const String &deviceId, const String &userId, const String &groupId)
 {
     if (!client.connected())
     {

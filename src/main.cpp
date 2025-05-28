@@ -124,13 +124,8 @@ void loop()
         input.trim();
         if (input.length() > 0 && (input[0] == 'c' || input[0] == 'C'))
         {
-            Logger::log("Entering WiFi configuration mode...");
+            Logger::log("# Entering configuration mode...");
             configureWiFiThroughSerial();
-            // 重新加载配置并重连WiFi
-            String ssid, password;
-            loadWiFiConfig(ssid, password);
-            WiFi.disconnect();
-            WiFi.begin(ssid.c_str(), password.c_str());
         }
     }
 }
@@ -144,32 +139,32 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
     Logger::log("Received message: " + message);
 
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, message);
+    // JsonDocument doc;
+    // DeserializationError error = deserializeJson(doc, message);
 
-    if (error)
-    {
-        Logger::log("JSON parsing failed");
-        return;
-    }
+    // if (error)
+    // {
+    //     Logger::log("JSON parsing failed");
+    //     return;
+    // }
 
-    const char *command = doc["command"];
-    JsonObject parameters = doc["parameters"];
+    // const char *command = doc["command"];
+    // JsonObject parameters = doc["parameters"];
 
-    if (strcmp(command, "LED") == 0)
-    {
-        int ledIndex = parameters["led_index"];
-        JsonArray color = parameters["color"];
-        int duration = parameters["duration"];
+    // if (strcmp(command, "LED") == 0)
+    // {
+    //     int ledIndex = parameters["led_index"];
+    //     JsonArray color = parameters["color"];
+    //     int duration = parameters["duration"];
 
-        setPixelColor(ledIndex, color[0], color[1], color[2]);
-        delay(duration);
-        setPixelColor(ledIndex, 0, 0, 0);
-    }
-    else if (strcmp(command, "BEEP") == 0)
-    {
-        int beepCount = parameters["beep_count"];
-        int duration = parameters["duration"];
-        beep(beepCount, duration);
-    }
+    //     setPixelColor(ledIndex, color[0], color[1], color[2]);
+    //     delay(duration);
+    //     setPixelColor(ledIndex, 0, 0, 0);
+    // }
+    // else if (strcmp(command, "BEEP") == 0)
+    // {
+    //     int beepCount = parameters["beep_count"];
+    //     int duration = parameters["duration"];
+    //     beep(beepCount, duration);
+    // }
 }

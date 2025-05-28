@@ -59,9 +59,10 @@ void showHardwareAndNetworkStatus()
     Logger::log("Network Status:");
     if (WiFi.status() == WL_CONNECTED)
     {
-        Logger::log("Connected to WiFi");
-        Logger::log("SSID: " + WiFi.SSID());
-        Logger::log("IP Address: " + WiFi.localIP().toString());
+        Logger::log("# -----------------------------------------");
+        Logger::log("# Connected to WiFi");
+        Logger::log("# SSID: " + WiFi.SSID());
+        Logger::log("# IP Address: " + WiFi.localIP().toString());
     }
     else
     {
@@ -69,23 +70,27 @@ void showHardwareAndNetworkStatus()
     }
 
     // Show hardware resource information (simply show pin configuration here)
-    Logger::log("Hardware Resources:");
+    Logger::log("# Hardware Resources:");
     // Since LED_PIN is undefined, we'll use a default value of 0 as a placeholder.
     // You should replace 0 with the actual pin number if known.
-    Logger::log("RGB LED Pin: " + String(LED_PIN));
-    Logger::log("Buzzer Pin: " + String(BUZZER_PIN));
+    Logger::log("# RGB LED Pin: " + String(LED_PIN));
+    Logger::log("# Buzzer Pin: " + String(BUZZER_PIN));
+    Logger::log("# -----------------------------------------");
 }
-
+void showHelp()
+{
+    Logger::log("\n# Help:");
+    Logger::log("# 1. Configure WiFi: Enter the SSID and password to connect to your WiFi network.");
+    Logger::log("# 2. View hardware resources and network status: Displays current hardware pin configurations and network status.");
+    Logger::log("# 3. Exit: Exit the configuration mode.");
+    Logger::log("# 'c' or 'C' enter config mode.");
+    Logger::log("# Please select an option:");
+}
 void configureWiFiThroughSerial()
 {
     while (true)
     {
-        Logger::log("\n# Please select an operation:");
-        Logger::log("# 1. Configure WiFi");
-        Logger::log("# 2. View hardware resources and network status");
-        Logger::log("# 3. Exit");
-        Logger::log("# Or send 'c' or 'C' at any time to enter configuration mode.");
-
+        showHelp();
         String input;
         char choice = 0;
         while (true)
@@ -107,17 +112,25 @@ void configureWiFiThroughSerial()
 
         switch (choice)
         {
-        case '1':
         case 'c':
         case 'C':
+            showHelp();
+            return;
+        case '1':
         {
             Logger::log("Please enter new WiFi SSID:");
-            while (Serial.available() == 0) { delay(10); }
+            while (Serial.available() == 0)
+            {
+                delay(10);
+            }
             String newSsid = Serial.readStringUntil('\n');
             newSsid.trim();
 
             Logger::log("Please enter new WiFi password:");
-            while (Serial.available() == 0) { delay(10); }
+            while (Serial.available() == 0)
+            {
+                delay(10);
+            }
             String newPassword = Serial.readStringUntil('\n');
             newPassword.trim();
 
